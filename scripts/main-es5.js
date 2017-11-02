@@ -71,7 +71,7 @@ function fetchWeatherData(e) {
 
     var forecastContainer = document.querySelector('.forecast-days');
 
-    fetch('http://api.openweathermap.org/data/2.5/forecast?id=' + id + '&APPID=' + apiKey).then(function (res) {
+    fetch('https://api.openweathermap.org/data/2.5/forecast?id=' + id + '&APPID=' + apiKey).then(function (res) {
       return res.json();
     }).then(function (data) {
       var daysFiltered = data.list.filter(function (item) {
