@@ -119,7 +119,7 @@ function fetchWeatherData(e){
 
         const forecastContainer = document.querySelector('.forecast-days');
 
-        fetch(`http://api.openweathermap.org/data/2.5/forecast?id=${id}&APPID=${apiKey}`)
+        fetch(`https://api.openweathermap.org/data/2.5/forecast?id=${id}&APPID=${apiKey}`)
           .then(res => res.json())
           .then(data => {
             const daysFiltered = data.list.filter(item => {
