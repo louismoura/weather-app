@@ -14,7 +14,7 @@ function fetchAutocomplete(e) {
 
   if (inputValue.length < 3) return;
 
-  fetch('http://api.openweathermap.org/data/2.5/find?q=' + inputValue + '&APPID=' + apiKey).then(function (res) {
+  fetch('https://api.openweathermap.org/data/2.5/find?q=' + inputValue + '&APPID=' + apiKey).then(function (res) {
     return res.json();
   }).then(function (data) {
 
@@ -50,7 +50,7 @@ function fetchWeatherData(e) {
     autocompleteListContainer.innerHTML = '';
   }
 
-  fetch('http://api.openweathermap.org/data/2.5/weather?id=' + id + '&APPID=' + apiKey).then(function (res) {
+  fetch('https://api.openweathermap.org/data/2.5/weather?id=' + id + '&APPID=' + apiKey).then(function (res) {
     return res.json();
   }).then(function (data) {
     var updateTime = moment.unix(data.dt).format('h:mm a');

@@ -13,7 +13,7 @@ function fetchAutocomplete(e){
 
   if(inputValue.length < 3) return;
 
-  fetch(`http://api.openweathermap.org/data/2.5/find?q=${inputValue}&APPID=${apiKey}`)
+  fetch(`https://api.openweathermap.org/data/2.5/find?q=${inputValue}&APPID=${apiKey}`)
     .then(res => res.json())
     .then(data => {
 
@@ -56,7 +56,7 @@ function fetchWeatherData(e){
     autocompleteListContainer.innerHTML = '';
   }
 
-  fetch(`http://api.openweathermap.org/data/2.5/weather?id=${id}&APPID=${apiKey}`)
+  fetch(`https://api.openweathermap.org/data/2.5/weather?id=${id}&APPID=${apiKey}`)
     .then(res => res.json())
     .then(data=> {
         const updateTime = moment.unix(data.dt).format('h:mm a')
