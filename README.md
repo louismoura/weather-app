@@ -5,5 +5,5 @@
   - HTML
   - CSS3, SASS
   - JavaScript(ES6), BABEL
-  - Openweatherapp API
+  - OpenWeatherMap API
   - moment.js library
