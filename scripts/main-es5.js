@@ -9,7 +9,8 @@ var autocompleteList = document.querySelector('.autocomplete-list');
 
 function fetchAutocomplete(e) {
   //IF KEY PRESSED IS LETTER KEY OR BACKSPACE
-  if (!(e.which >= 65 && e.which <= 90 || e.which == 8)) return;
+  var key = e.which || e.keyCode;
+  if (!(key >= 65 && key <= 90 || key == 8 || key == 229)) return;
   var inputValue = this.value.trim();
   //CLEAR LIST
   autocompleteList.innerHTML = '';
