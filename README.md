@@ -6,4 +6,5 @@
   - CSS3, SASS
   - JavaScript(ES6), BABEL
   - OpenWeatherMap API
+  - Questmap API for autocomplete list information
   - moment.js library

@@ -44,7 +44,7 @@ body
 .search-form-input
   width: 100%
   height: 50px
-  font-size: 35px
+  font-size: 32px
   padding: 2px 0 2px 15px
   margin: 0
   background: transparent
@@ -108,6 +108,18 @@ body
   &:hover
     padding-left: 25px
 
+.loading-list:hover
+  padding-left: 15px
+
+
+.autocomplete-list-cityCountry
+  margin: 5px 0
+
+.autocomplete-list-state
+  font-size: 18px
+  display: block
+  margin-bottom: 5px
+
 //EROR
 
 .error-info
@@ -117,6 +129,43 @@ body
   text-transform: uppercase
   font-weight: 800
   color: #fffb00
+
+.fetch-error
+  font-size: 45px
+  text-align: center
+  margin: 8px 0
+  text-transform: uppercase
+  font-weight: 800
+  color: red
+
+//LOADING
+
+.loading
+  font-size: 205px
+  display: flex
+  flex: 0 1 100%
+  justify-content: center
+  align-items: center
+  transform-origin: center
+  animation: loadingTransition 8s linear infinite
+
+.loading-autocomplete
+  font-size: 50px
+  display: flex
+  flex: 0 1 100%
+  justify-content: center
+  align-items: center
+  transform-origin: center
+  animation: loadingTransition 8s linear infinite
+  padding: 15px 0
+
+
+@keyframes loadingTransition
+  0%
+    transform: rotate(0deg)
+  100%
+    transform: rotate(360deg)
+
 
 
 //MAIN WEATHER SECTION
@@ -197,12 +246,12 @@ body
 
 .clouds-info-messure.two-num
   font-size: 47px
-  top: 34px
-  left: 38px
+  top: 36px
+  left: 41px
 
 .clouds-info-messure.one-num
   font-size: 60px
-  top: 16px
+  top: 23px
   left: 47px
 
 .clouds-info-prec

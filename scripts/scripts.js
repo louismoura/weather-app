@@ -1,63 +1,106 @@
-const app = document.querySelector('.app');
-const appForm = document.querySelector('.search-form');
 const apiKey = '73855c7abb85af3fe9e6ae926705ff06';
+const apiKey2 = 'iNws003BsfzxWmZR16akCEz9FYqfOor3';
 const appPrint = document.querySelector('.weather-info-container');
 const formInput = document.querySelector('.search-form-input');
-
+const form = document.querySelector('.search-form');
+const autocompleteList = document.querySelector('.autocomplete-list');
 
 function fetchAutocomplete(e){
-  //IF ENTER IS PRESSED RETRUN
-  if(e.which == 13) return
+  //IF KEY PRESSED IS LETTER KEY OR BACKSPACE
+  if (!(e.which >= 65 && e.which <= 90 || e.which == 8)) return;
   const inputValue = this.value.trim();
-  const autocompleteList = document.querySelector('.autocomplete-list');
-
+  //CLEAR LIST
+  autocompleteList.innerHTML = '';
   if(inputValue.length < 3) return;
+  //LOADING
+  autocompleteList.innerHTML = "<li class='autocomplete-list-item loading-list'><i class='wi wi-day-sunny loading-autocomplete'></i></li>";
 
-  fetch(`https://api.openweathermap.org/data/2.5/find?q=${inputValue}&APPID=${apiKey}`)
-    .then(res => res.json())
+  fetch(`https://api.openweathermap.org/data/2.5/find?q=${inputValue}&APPID=${apiKey}`, {
+    'method': 'get'
+  })
+    .then(res => {
+      if(res.ok){
+        return res.json();
+      } else {
+        handleError();
+      }
+    })
     .then(data => {
+      //IF THER IS NO DATA RETRUN
+      if(!data.list.length) {
+        autocompleteList.innerHTML = "<li class='error-info'>There is no such city</li>";
+        return;
+      }
 
-      const cityList = data.list.map(city => {
-        return(
-          `<li class='autocomplete-list-item' data-id=${city.id}>
-            ${city.name}, ${city.sys.country}
-          </li>`
-        )
-      }).join('');
-
-      autocompleteList.innerHTML = cityList;
-    })
-    .then(() => {
-      const autocompleteCity = document.querySelectorAll('.autocomplete-list-item');
-      autocompleteCity.forEach(city => {
-        city.addEventListener('click', fetchWeatherData);
+      const cityArray = data.list.map(city => {
+        const fechedData = fetch(`http://open.mapquestapi.com/geocoding/v1/reverse?key=${apiKey2}&location=${city.coord.lat},${city.coord.lon}&includeNearestIntersection=true`, {
+          'method': 'get'
+        })
+        .then(res => {
+          if(res.ok){
+            return res.json();
+          } else {
+            handleError();
+          }
+        })
+        .then(data => {
+          const cityDataArrayItem = {
+            location: data.results[0].locations[0],
+            id: city.id
+          };
+          return cityDataArrayItem;
+        })
+        return fechedData;
       })
+      return cityArray;
     })
+    .then((data)=>{
+      //IF THER IS NO DATA RETURN
+      if(!data) return;
+
+      Promise.all(data).then(values => {
+        const arrayOfCities = values.map(cityData => {
+          const cityAndCountryName = `<p class='autocomplete-list-cityCountry'>${cityData.location.adminArea5}, ${cityData.location.adminArea1}</p>`;
+          const stateName = `<span class='autocomplete-list-state'>${cityData.location.adminArea3}</span>`;
+         return(
+         `<li class='autocomplete-list-item' data-id='${cityData.id}'>
+            ${cityAndCountryName}${stateName}
+          </li>`
+         )
+        }).join('');
+
+        autocompleteList.innerHTML = arrayOfCities
+      })
+      .then(()=> {
+        const autocompleteListItems = document.querySelectorAll('.autocomplete-list-item');
+
+        autocompleteListItems.forEach( listItem => {
+          listItem.addEventListener('click', fetchWeatherData);
+        })
+      })
+      .catch(() => handleError);
+    })
+    .catch(() => handleError);
 }
 
 
-function fetchWeatherData(e){
-  e.preventDefault();
-  let id;
-  const autocompleteListContainer = document.querySelector('.autocomplete-list');
-  if(e.type == 'submit'){
-    const autoCompliteListItems = document.querySelectorAll('.autocomplete-list-item')
+function fetchWeatherData(){
+  const id = this.dataset.id;
+  //CLEAR SEARCH RESULTS
+  autocompleteList.innerHTML = '';
+  //ADDD LOADING SCREEN
+  appPrint.innerHTML = "<i class='loading wi wi-day-sunny'></i>";
 
-    if(autoCompliteListItems.length != 0){
-      id = autoCompliteListItems[0].dataset.id;
-      autocompleteListContainer.innerHTML = '';
-    } else {
-      autocompleteListContainer.innerHTML = "<li class='error-info'>There is no such city</li>";
-      return;
-    }
-
-  } else {
-    id = this.dataset.id;
-    autocompleteListContainer.innerHTML = '';
-  }
-
-  fetch(`https://api.openweathermap.org/data/2.5/weather?id=${id}&APPID=${apiKey}`)
-    .then(res => res.json())
+  fetch(`https://api.openweathermap.org/data/2.5/weather?id=${id}&APPID=${apiKey}`, {
+    'method': 'get'
+  })
+    .then(res => {
+      if(res.ok){
+        return res.json();
+      } else {
+        handleError();
+      }
+    })
     .then(data=> {
         const updateTime = moment.unix(data.dt).format('h:mm a')
         let cloudsClass;
@@ -113,9 +156,11 @@ function fetchWeatherData(e){
           </div>
         `;
 
-        appPrint.innerHTML = dataToPrint;
         formInput.value = `${data.name}, ${data.sys.country}`;
-      }).then(() => {
+        return dataToPrint;
+      })
+      .then(data => appPrint.innerHTML = data)
+      .then(() => {
 
         const forecastContainer = document.querySelector('.forecast-days');
 
@@ -138,33 +183,13 @@ function fetchWeatherData(e){
             forecastContainer.innerHTML = dayList;
           })
       })
-      .catch((err) => {
-        console.log(err);
-        if(!!err){
-          autocompleteList.innerHTML = "<li class='search-error'>No locations were found that would meet the criteria</li>"
-        }
-      })
+      .catch((err) => handleError);
 }
 
-function fetchCityData() {
-  const dataKey = this.dataset.key;
-
-  formInput.value = '';
-  this.offsetParent.style.display = 'none';
-
-
-  fetch(`http://dataservice.accuweather.com/currentconditions/v1/${dataKey}?apikey=${apiKey}&details=True`, {
-    method: 'get',
-    headers: {
-      'Accept-Encoding': 'gzip'
-    }
-  }).then(res => res.json()
-    .then(data => {
-      console.log(data);
-    })
-);
+function handleError(){
+  autocompleteList.innerHTML = "<li class='fetch-error'>Something went wrong</li>"
 }
 
 
 formInput.addEventListener('keyup', fetchAutocomplete);
-appForm.addEventListener('submit', fetchWeatherData);
+form.addEventListener('submit', (e) => e.preventDefault());
