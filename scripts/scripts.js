@@ -33,7 +33,7 @@ function fetchAutocomplete(e){
       }
 
       const cityArray = data.list.map(city => {
-        const fechedData = fetch(`http://open.mapquestapi.com/geocoding/v1/reverse?key=${apiKey2}&location=${city.coord.lat},${city.coord.lon}&includeNearestIntersection=true`, {
+        const fechedData = fetch(`https://open.mapquestapi.com/geocoding/v1/reverse?key=${apiKey2}&location=${city.coord.lat},${city.coord.lon}&includeNearestIntersection=true`, {
           'method': 'get'
         })
         .then(res => {

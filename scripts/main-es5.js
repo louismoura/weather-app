@@ -33,7 +33,7 @@ function fetchAutocomplete(e) {
     }
 
     var cityArray = data.list.map(function (city) {
-      var fechedData = fetch('http://open.mapquestapi.com/geocoding/v1/reverse?key=' + apiKey2 + '&location=' + city.coord.lat + ',' + city.coord.lon + '&includeNearestIntersection=true', {
+      var fechedData = fetch('https://open.mapquestapi.com/geocoding/v1/reverse?key=' + apiKey2 + '&location=' + city.coord.lat + ',' + city.coord.lon + '&includeNearestIntersection=true', {
         'method': 'get'
       }).then(function (res) {
         if (res.ok) {
