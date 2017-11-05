@@ -6,8 +6,9 @@ const form = document.querySelector('.search-form');
 const autocompleteList = document.querySelector('.autocomplete-list');
 
 function fetchAutocomplete(e){
-  //IF KEY PRESSED IS LETTER KEY OR BACKSPACE
+  //IF KEY PRESSED IS LETTER KEY OR BACKSPACE, KEY 229 FOR VIRTUAL KEYBOARD ON SMARTPHONES/TABLETS
   const key = e.which || e.keyCode;
+
   if (!(key >= 65 && key <= 90 || key == 8 || key == 229)) return;
   const inputValue = this.value.trim();
   //CLEAR LIST
